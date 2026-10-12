@@ -1,0 +1,33 @@
+{
+  "name": "surety",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bonded, refundable agent APIs on Avalanche with payment-gated ERC-8004 reputation",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "wallets": "tsx scripts/gen-wallets.ts",
+    "deploy:fuji": "hardhat run scripts/deploy.ts --network fuji",
+    "setup:fuji": "tsx scripts/setup-fuji.ts",
+    "start": "tsx server/index.ts",
+    "local:node": "hardhat node",
+    "local:deploy": "hardhat run --network localhost scripts/deploy-local.ts",
+    "start:local": "tsx server/index.ts --local",
+    "deploy:mainnet": "hardhat run scripts/deploy.ts --network avalanche"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.5",
+    "hardhat": "^2.29.1",
+    "tsx": "^4.23.15",
+    "typescript": "5.6"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.6.1",
+    "dotenv": "^18.0.7",
+    "ethers": "^6.17.0",
+    "express": "^5.3.0"
+  },
+  "license": "MIT"
+}

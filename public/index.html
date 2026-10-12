@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Surety</title>
+<style>
+  :root{
+    --bg:#0c0d10; --panel:#14161b; --panel2:#1a1d24; --line:#262a33; --text:#e9ebf0; --mute:#8b93a3;
+    --red:#e84142; --green:#34d399; --amber:#fbbf24; --blue:#60a5fa; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;margin-bottom:18px}
+  h1{margin:0;font-size:26px;letter-spacing:-.02em}
+  h1 span{color:var(--red)}
+  .tag{color:var(--mute);margin:2px 0 0}
+  .badge{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);padding:4px 10px;border-radius:99px;color:var(--mute);font-size:12px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+  .grid{display:grid;gap:14px}
+  .stats{grid-template-columns:repeat(4,1fr);margin-bottom:14px}
+  .stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+  .stat b{display:block;font-size:26px;letter-spacing:-.02em}
+  .stat span{color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+  .two{grid-template-columns:1fr 1fr}
+  h2{margin:0 0 10px;font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+  .seller h3{margin:0;font-size:18px}
+  .seller .sub{color:var(--mute);font-size:13px;margin:2px 0 10px}
+  .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+  .kv div{background:var(--panel2);border-radius:10px;padding:8px 10px}
+  .kv small{display:block;color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+  .kv b{font-size:17px}
+  .bar{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden;margin:6px 0 2px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#10b981);transition:width .6s}
+  .modes{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 12px}
+  button:hover{border-color:#3a4050}
+  button.on{border-color:var(--green);color:var(--green)}
+  button.lie.on{border-color:var(--red);color:var(--red)}
+  button.primary{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
+  button.primary:disabled{opacity:.5;cursor:wait}
+  .badge-mode{font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+  .badge-mode.skew,.badge-mode.stall{border-color:var(--red);color:var(--red)}
+  #log{background:#090a0d;border:1px solid var(--line);border-radius:10px;padding:10px;height:300px;overflow:auto;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  #log div{margin:0 0 4px}
+  #log .good{color:var(--green)} #log .bad{color:#ff7b7c} #log .chain{color:var(--blue)} #log .info{color:#c3c8d4}
+  #log .ag{color:var(--amber)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{color:var(--mute);font-weight:600;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:6px 8px}
+  td{padding:8px;border-top:1px solid var(--line)}
+  .pill{padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}
+  .pill.settled{background:#34d39922;color:var(--green)} .pill.refunded{background:#e8414222;color:#ff7b7c} .pill.open{background:#fbbf2422;color:var(--amber)}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+  .how{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+  .how div{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;font-size:13px;color:var(--mute)}
+  .how b{display:block;color:var(--text);margin-bottom:2px}
+  footer{margin-top:18px;color:var(--mute);font-size:12px;display:flex;gap:14px;flex-wrap:wrap}
+  @media (max-width:820px){.stats{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.how{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Sure<span>ty</span></h1>
+      <p class="tag">Every API call an AI agent buys is backed by the seller's bond. Wrong answer: refund plus slash, automatically.</p>
+    </div>
+    <div><span class="badge"><i class="dot"></i><span id="net">connecting…</span></span></div>
+  </header>
+
+  <div class="grid stats">
+    <div class="stat"><span>Orders</span><b id="s-orders">–</b></div>
+    <div class="stat"><span>Settled</span><b id="s-settled" style="color:var(--green)">–</b></div>
+    <div class="stat"><span>Refunded</span><b id="s-refunded" style="color:#ff7b7c">–</b></div>
+    <div class="stat"><span>Slashed from sellers</span><b id="s-slashed">–</b></div>
+  </div>
+
+  <div class="grid two">
+    <div>
+      <h2>Sellers (ERC-8004 agents with a bond)</h2>
+      <div class="grid" id="sellers"></div>
+    </div>
+    <div>
+      <h2>Buyer agents</h2>
+      <div class="card">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <button class="primary" id="run1">Run buyer agent</button>
+          <button class="primary" id="run4">Release swarm (4 agents)</button>
+          <span style="margin-left:auto;color:var(--mute);font-size:13px;align-self:center">Buyer wallet: <b id="bal">–</b> tUSDC</span>
+        </div>
+        <div id="log"><div class="info">Ready. Make a seller lie, then send an agent to buy from it.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:18px">Live orders (read from the chain)</h2>
+  <div class="card" style="padding:6px 10px;overflow:auto">
+    <table>
+      <thead><tr><th>#</th><th>Seller</th><th>Price</th><th>Delivered AVAX/USD</th><th>Outcome</th><th>Why</th><th>Tx</th></tr></thead>
+      <tbody id="orders"><tr><td colspan="7" style="color:var(--mute)">No orders yet.</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="how">
+    <div><b>1. Bond</b>Seller registers an ERC-8004 identity and locks a USDC bond.</div>
+    <div><b>2. Escrow</b>Buyer's gasless EIP-3009 payment is bound to exact terms and held by the contract.</div>
+    <div><b>3. Verify</b>Seller delivers on-chain. A pure function checks the answer against Chainlink.</div>
+    <div><b>4. Settle or slash</b>Pass: seller paid, +100 reputation. Fail or late: buyer gets 2x, seller slashed.</div>
+  </div>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const short = (a) => a ? a.slice(0, 6) + "…" + a.slice(-4) : "";
+let state = null;
+
+function sellerCard(s) {
+  const total = s.completed + s.failed;
+  const rate = total ? Math.round((s.completed / total) * 100) : null;
+  const repTxt = s.rep.avg === null ? "no history" : `${s.rep.avg.toFixed(0)}/100 · ${s.rep.count} sale${s.rep.count === 1 ? "" : "s"}`;
+  const modeLabel = { honest: "honest", skew: "lying (+12% price)", stall: "silent (never delivers)" }[s.mode];
+  return `<div class="card seller">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3>${esc(s.name)} <span class="badge-mode ${esc(s.mode)}">${esc(modeLabel)}</span></h3>
+      <b>$${esc(s.price)} / call</b>
+    </div>
+    <div class="sub">${esc(s.blurb)} · ERC-8004 agent #${esc(s.agentId)} · <a target="_blank" rel="noopener" href="${state.explorer}/address/${esc(s.address)}">${short(s.address)}</a></div>
+    <div class="kv">
+      <div><small>Bond</small><b>$${esc(s.bond)}</b></div>
+      <div><small>Locked</small><b>$${esc(s.locked)}</b></div>
+      <div><small>Sold</small><b>${s.completed} ok / ${s.failed} failed</b></div>
+    </div>
+    <div style="font-size:12px;color:var(--mute)">ERC-8004 reputation (Surety-authored only): <b style="color:var(--text)">${esc(repTxt)}</b></div>
+    <div class="bar"><i style="width:${rate === null ? 0 : rate}%"></i></div>
+    <div class="modes">
+      <button class="${s.mode === "honest" ? "on" : ""}" onclick="setMode('${s.key}','honest')">Honest</button>
+      <button class="lie ${s.mode === "skew" ? "on" : ""}" onclick="setMode('${s.key}','skew')">Make it lie</button>
+      <button class="lie ${s.mode === "stall" ? "on" : ""}" onclick="setMode('${s.key}','stall')">Make it go silent</button>
+    </div>
+  </div>`;
+}
+
+function render() {
+  if (!state) return;
+  $("net").textContent = `${{ fuji: "Avalanche Fuji", avalanche: "Avalanche C-Chain", local: "Local test chain" }[state.network] || state.network} · chain ${state.chainId}`;
+  $("s-orders").textContent = state.totals.orders;
+  $("s-settled").textContent = state.totals.settled;
+  $("s-refunded").textContent = state.totals.refunded;
+  $("s-slashed").textContent = "$" + state.totals.slashedUsdc;
+  $("bal").textContent = state.buyer.usdc;
+  $("sellers").innerHTML = state.sellers.map(sellerCard).join("");
+  const nameOf = Object.fromEntries(state.sellers.map((s) => [s.address.toLowerCase(), s.name]));
+  $("orders").innerHTML = state.orders.length ? state.orders.map((o) => {
+    const tx = o.finalTx || o.openTx;
+    return `<tr>
+      <td>${o.id}</td><td>${esc(nameOf[o.seller.toLowerCase()] || short(o.seller))}</td>
+      <td>$${(Number(o.price) / 1e6).toFixed(2)}</td>
+      <td>${o.deliveredPrice ? "$" + esc(o.deliveredPrice) : "–"}</td>
+      <td><span class="pill ${o.status}">${o.status}</span></td>
+      <td style="color:var(--mute)">${esc(o.reason || "")}</td>
+      <td>${tx ? `<a target="_blank" rel="noopener" href="${state.explorer}/tx/${esc(tx)}">${short(tx)}</a>` : ""}</td></tr>`;
+  }).join("") : `<tr><td colspan="7" style="color:var(--mute)">No orders yet.</td></tr>`;
+  const c = state.contracts;
+  const link = (l, a) => `<a target="_blank" rel="noopener" href="${state.explorer}/address/${a}">${l} ${short(a)}</a>`;
+  $("foot").innerHTML = [link("Surety", c.surety), link("ERC-8004 Identity", c.identity), link("ERC-8004 Reputation", c.reputation),
+    link("Price verifier", c.priceVerifier), link("Chainlink AVAX/USD", c.feed), link("USDC", c.usdc)].join(" · ");
+}
+
+async function refresh() {
+  try { state = await (await fetch("/api/state")).json(); render(); } catch (e) { $("net").textContent = "offline"; }
+}
+
+async function setMode(key, mode) {
+  await fetch(`/api/seller/${key}/mode`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode }) });
+  refresh();
+}
+
+function logLine(l) {
+  const d = document.createElement("div");
+  d.className = l.kind;
+  const ag = document.createElement("span"); ag.className = "ag"; ag.textContent = `[${l.agent}] `;
+  d.appendChild(ag);
+  d.appendChild(document.createTextNode(l.text));
+  if (l.tx && state) {
+    const a = document.createElement("a"); a.target = "_blank"; a.rel = "noopener"; a.href = `${state.explorer}/tx/${l.tx}`; a.textContent = " ↗ tx";
+    d.appendChild(a);
+  }
+  $("log").appendChild(d);
+  $("log").scrollTop = $("log").scrollHeight;
+}
+
+let running = false;
+function run(n) {
+  if (running) return;
+  running = true;
+  $("run1").disabled = $("run4").disabled = true;
+  $("log").innerHTML = "";
+  const es = new EventSource(`/api/agent/run?agents=${n}`);
+  es.addEventListener("log", (e) => { logLine(JSON.parse(e.data)); refresh(); });
+  const end = () => { es.close(); running = false; $("run1").disabled = $("run4").disabled = false; refresh(); };
+  es.addEventListener("done", end);
+  es.onerror = end;
+}
+$("run1").onclick = () => run(1);
+$("run4").onclick = () => run(4);
+
+refresh();
+setInterval(refresh, 2500);
+</script>
+</body>
+</html>
