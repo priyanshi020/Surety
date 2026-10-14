@@ -20,7 +20,7 @@ const RPC =
       : process.env.AVAX_RPC || "https://api.avax.network/ext/bc/C/rpc";
 
 export const provider = new JsonRpcProvider(RPC, dep.chainId, { staticNetwork: true });
-export const EXPLORER = NETWORK === "fuji" ? "https://testnet.snowtrace.io" : NETWORK === "local" ? "" : "https://snowtrace.io";
+export const EXPLORER = NETWORK === "fuji" ? "https://explorer-test.avax.network/c-chain" : NETWORK === "local" ? "" : "https://subnets.avax.network/c-chain";
 export const PORT = Number(process.env.PORT || 8787);
 
 function need(k: string): string {

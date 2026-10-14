@@ -22,7 +22,7 @@ building agents that buy data/APIs, and API sellers who want to prove they are r
 **Chainlink AVAX/USD feed on Avalanche**, x402-style HTTP 402 flow, EIP-3009 (USDC `receiveWithAuthorization`), Solidity 0.8.24
 (Hardhat, OpenZeppelin), TypeScript, ethers v6, Express, vanilla-JS dashboard.
 
-**Live link / contracts:** Fuji deployment is live. Surety: https://testnet.snowtrace.io/address/0x18ccaE1b7F89c3aDB3C3A2a5Be738DbB944DaD70
+**Live link / contracts:** Fuji deployment is live. Surety: https://explorer-test.avax.network/c-chain/address/0x18ccaE1b7F89c3aDB3C3A2a5Be738DbB944DaD70
 (all contract addresses and example transactions for settle, lie-then-refund, and timeout-refund are in the README under
 "Live on Avalanche Fuji"). Repo with setup instructions: https://github.com/priyanshi020/Surety
 
