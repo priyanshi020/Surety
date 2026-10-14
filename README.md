@@ -13,6 +13,35 @@ seller returns garbage there is no refund path. Surety makes every call refundab
 - Reputation is written to the **ERC-8004 Reputation Registry only after a settled order**, with the Surety contract as
   the sole feedback author. Buyers filter on that author, so reputation cannot be farmed with fake clients.
 
+## Live on Avalanche Fuji (chain 43113)
+
+| Contract | Address |
+|---|---|
+| Surety | [`0x18ccaE1b7F89c3aDB3C3A2a5Be738DbB944DaD70`](https://testnet.snowtrace.io/address/0x18ccaE1b7F89c3aDB3C3A2a5Be738DbB944DaD70) |
+| PriceReferenceVerifier | [`0x2Bc51d4e96879Be794585Cc494F2e6f0B89E6dE6`](https://testnet.snowtrace.io/address/0x2Bc51d4e96879Be794585Cc494F2e6f0B89E6dE6) |
+| HashCommitVerifier | [`0x7272AE862758893F3891861185e7E47bCD1AFab6`](https://testnet.snowtrace.io/address/0x7272AE862758893F3891861185e7E47bCD1AFab6) |
+| Test USDC (EIP-3009) | [`0x491B5dcFa9bfb1d0608cbF18D7C724850543e6A1`](https://testnet.snowtrace.io/address/0x491B5dcFa9bfb1d0608cbF18D7C724850543e6A1) |
+| ERC-8004 Identity Registry (official) | [`0x8004A818BFB912233c491871b3d84c89A494BD9e`](https://testnet.snowtrace.io/address/0x8004A818BFB912233c491871b3d84c89A494BD9e) |
+| ERC-8004 Reputation Registry (official) | [`0x8004B663056A597Dffe9eCcC1965A193B7388713`](https://testnet.snowtrace.io/address/0x8004B663056A597Dffe9eCcC1965A193B7388713) |
+| Chainlink AVAX/USD (official) | [`0x5498BB86BC934c8D34FDA08E81D444153d0D06aD`](https://testnet.snowtrace.io/address/0x5498BB86BC934c8D34FDA08E81D444153d0D06aD) |
+
+Sellers are real ERC-8004 agents: Atlas Oracle is agent #255 and Basil Feeds is agent #256.
+
+Real transactions you can open (each is one of the scenarios from the demo):
+
+| Scenario | Transaction |
+|---|---|
+| Honest delivery, verified against Chainlink, seller paid | [order #1 settle](https://testnet.snowtrace.io/tx/0xccf71a264f9a9e5dd8df2ce9ce613b5813c5778364426726025dbe7a2ce9b2f7) |
+| Seller lied (+12%): buyer refunded 2x, bond slashed | [order #2 refund](https://testnet.snowtrace.io/tx/0x97b27ebca297387885f9676dc14c293840d24e5f48f50f9eae7c0a110171a3cd) |
+| Seller went silent: anyone forces the refund after the deadline | [order #4 timeout refund](https://testnet.snowtrace.io/tx/0x2ebb10ca43854e70d2174a268577c2c0041fd65e535fe3bae5d1800e3f485524) |
+
+Verified by running the full flow on Fuji with the official registries: honest buy, lie then refund+slash, the buyer agent
+rerouting away from the cheater using only the ERC-8004 reputation, timeout refund, and a 3-agent swarm.
+
+**Found by testing on the real registry:** a first deployment wrote no reputation, because the caught `giveFeedback` call ran out
+of gas under the transaction's estimated gas limit. That also meant a cheating seller could under-gas `deliver` to skip its bad
+mark. Surety now requires enough gas for the feedback call or the whole transaction reverts (covered by a test).
+
 ## Why it is different
 
 Escrow for agents exists on other chains (MeshLedger, PayCrow, x402r, Fortytwo's escrow). Surety's combination:
@@ -74,7 +103,7 @@ npm run start:local      # terminal 2, then open http://localhost:8787
 
 ### Tests
 ```bash
-npm test                 # 12 contract tests
+npm test                 # 13 contract tests
 ```
 
 ## Official addresses used (verified by eth_getCode on Fuji)

@@ -1,0 +1,17 @@
+{
+  "network": "fuji",
+  "chainId": 43113,
+  "deployedAt": "2026-10-14T12:12:34.592Z",
+  "deployBlock": 59443065,
+  "usdc": "0x491B5dcFa9bfb1d0608cbF18D7C724850543e6A1",
+  "usdcDomain": {
+    "name": "Surety Test USDC",
+    "version": "2"
+  },
+  "surety": "0x18ccaE1b7F89c3aDB3C3A2a5Be738DbB944DaD70",
+  "priceVerifier": "0x2Bc51d4e96879Be794585Cc494F2e6f0B89E6dE6",
+  "hashVerifier": "0x7272AE862758893F3891861185e7E47bCD1AFab6",
+  "identityRegistry": "0x8004A818BFB912233c491871b3d84c89A494BD9e",
+  "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+  "avaxUsdFeed": "0x5498BB86BC934c8D34FDA08E81D444153d0D06aD"
+}

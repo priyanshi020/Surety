@@ -290,6 +290,10 @@ contract Surety is Ownable, ReentrancyGuard {
 
     /// @dev Reputation is best-effort: a registry problem must never block or trap user funds.
     function _feedback(uint256 orderId, uint256 agentId, int128 value, string memory tag2, bytes32 evidence) internal {
+        // The caller must supply enough gas for the registry call. Without this, a cheating seller could
+        // under-gas the transaction so the (caught) feedback call runs out of gas and the bad mark is skipped.
+        // If the registry itself reverts, that is still tolerated below.
+        require(gasleft() > (FEEDBACK_GAS * 64) / 63 + 30_000, "insufficient gas for feedback");
         try reputation.giveFeedback{gas: FEEDBACK_GAS}(agentId, value, 0, "surety", tag2, "", "", evidence) {}
         catch {
             emit FeedbackFailed(orderId);

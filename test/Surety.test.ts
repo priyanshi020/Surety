@@ -183,6 +183,17 @@ describe("Surety", () => {
     expect((await usdc.balanceOf(sellerA.address)) - before).to.equal(USDC(1));
   });
 
+  it("a seller cannot skip the reputation write by under-gassing deliver", async () => {
+    const { surety, sellerA, signedOrder, priceTerms, priceResult, rep } = await setup();
+    const t = priceTerms(1);
+    await surety.openOrder(t, await signedOrder(t));
+    // cheating result + starved gas: the whole tx must revert instead of silently dropping the bad mark
+    await expect(surety.connect(sellerA).deliver(1, priceResult(99), { gasLimit: 300_000 })).to.be.reverted;
+    expect((await surety.orders(1)).status).to.equal(1); // still open
+    await surety.connect(sellerA).deliver(1, priceResult(99)); // properly gassed: refund + bad mark recorded
+    expect((await rep.feedback(1, 0)).value).to.equal(0);
+  });
+
   it("only the agent's owner can register as its seller", async () => {
     const { surety, stranger, usdc } = await setup();
     await usdc.faucet(stranger.address, USDC(10));

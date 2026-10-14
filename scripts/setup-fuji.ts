@@ -51,8 +51,8 @@ async function main() {
   const surety = new Contract(dep.surety, SURETY_ABI, deployer);
 
   console.log("1) Funding gas");
-  for (const s of sellers) await sendAvax(s.wallet.address, "0.15");
-  await sendAvax(buyer.address, "0.15");
+  for (const s of sellers) await sendAvax(s.wallet.address, "0.05");
+  await sendAvax(buyer.address, "0.05");
 
   console.log("2) Test USDC");
   for (const s of sellers) await (await usdc.faucet(s.wallet.address, 500_000_000n)).wait();
@@ -69,11 +69,21 @@ async function main() {
       continue;
     }
     const idc = identity.connect(s.wallet) as Contract;
-    const rc = await (await idc.register(agentUri(s.name, s.wallet.address))).wait();
-    const transferTopic = keccakId("Transfer(address,address,uint256)");
-    const log = rc.logs.find((l: any) => l.topics[0] === transferTopic && l.topics.length === 4);
-    if (!log) throw new Error("could not find agent id in registration receipt");
-    const agentId = BigInt(log.topics[3]);
+    let agentId: bigint | undefined;
+    const prev = process.env[s.env];
+    if (prev) {
+      try {
+        // reuse an agent identity this wallet already owns (a new Surety deployment does not need a new identity)
+        if ((await identity.ownerOf(BigInt(prev))).toLowerCase() === s.wallet.address.toLowerCase()) agentId = BigInt(prev);
+      } catch {}
+    }
+    if (agentId === undefined) {
+      const rc = await (await idc.register(agentUri(s.name, s.wallet.address))).wait();
+      const transferTopic = keccakId("Transfer(address,address,uint256)");
+      const log = rc.logs.find((l: any) => l.topics[0] === transferTopic && l.topics.length === 4);
+      if (!log) throw new Error("could not find agent id in registration receipt");
+      agentId = BigInt(log.topics[3]);
+    }
     console.log(`  ${s.name} -> ERC-8004 agent #${agentId}`);
 
     await ((usdc.connect(s.wallet) as Contract).approve(dep.surety, BOND)).then((t: any) => t.wait());
