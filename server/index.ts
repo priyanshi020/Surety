@@ -84,11 +84,24 @@ app.get("/api/state", async (_req, res) => {
 // ------------------------------------------------- buyer agent / swarm (SSE)
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+// One demo run at a time. A public deployment must not let strangers drain the demo wallets with parallel runs.
+let runInProgress = false;
+
 app.get("/api/agent/run", async (req, res) => {
   const n = Math.min(Math.max(Number(req.query.agents) || 1, 1), 6);
   res.set({ "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" });
   res.flushHeaders();
-  const send = (event: string, data: any) => res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+  const send = (event: string, data: any) => res.write(`event: ${event}
+data: ${JSON.stringify(data)}
+
+`);
+
+  if (runInProgress) {
+    send("log", { agent: "Demo", kind: "bad", text: "Another demo run is in progress. Wait for it to finish, then try again." });
+    send("done", { results: [] });
+    return res.end();
+  }
+  runInProgress = true;
   const emit = (l: LogLine) => {
     cache = null;
     send("log", l);
@@ -108,6 +121,7 @@ app.get("/api/agent/run", async (req, res) => {
     const results = await Promise.all(jobs);
     send("done", { results });
   } finally {
+    runInProgress = false;
     res.end();
   }
 });

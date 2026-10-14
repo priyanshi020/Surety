@@ -103,6 +103,9 @@ npm run start:local      # terminal 2, then open http://localhost:8787
    ```
 3. Optional mainnet: set `USDC_ADDRESS` to Circle USDC and run `npm run deploy:mainnet`, then `SURETY_NETWORK=avalanche npm start`.
 
+### Public deployment (Render)
+See [DEPLOY_RENDER.md](DEPLOY_RENDER.md) and `render.yaml`. Secrets go in the Render dashboard, never in the repo.
+
 ### Tests
 ```bash
 npm test                 # 13 contract tests

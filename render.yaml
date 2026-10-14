@@ -1,0 +1,27 @@
+# Render Blueprint: one web service running the Surety demo (dashboard + seller/buyer agents + keeper) against Avalanche Fuji.
+# Secrets are NOT stored here. In the Render dashboard, paste the values from your local .env (throwaway test wallets only).
+services:
+  - type: web
+    name: surety-demo
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/state
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: SURETY_NETWORK
+        value: fuji
+      - key: DEPLOYER_KEY
+        sync: false
+      - key: SELLER_A_KEY
+        sync: false
+      - key: SELLER_B_KEY
+        sync: false
+      - key: BUYER_KEY
+        sync: false
+      - key: SELLER_A_AGENT_ID
+        value: "255"
+      - key: SELLER_B_AGENT_ID
+        value: "256"
