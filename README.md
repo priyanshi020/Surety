@@ -19,10 +19,10 @@ Links open the official Avalanche explorer (`explorer-test.avax.network`). Snowt
 
 | Contract | Address |
 |---|---|
-| Surety | [`0x18ccaE1b7F89c3aDB3C3A2a5Be738DbB944DaD70`](https://explorer-test.avax.network/c-chain/address/0x18ccaE1b7F89c3aDB3C3A2a5Be738DbB944DaD70) |
-| PriceReferenceVerifier | [`0x2Bc51d4e96879Be794585Cc494F2e6f0B89E6dE6`](https://explorer-test.avax.network/c-chain/address/0x2Bc51d4e96879Be794585Cc494F2e6f0B89E6dE6) |
-| HashCommitVerifier | [`0x7272AE862758893F3891861185e7E47bCD1AFab6`](https://explorer-test.avax.network/c-chain/address/0x7272AE862758893F3891861185e7E47bCD1AFab6) |
-| Test USDC (EIP-3009) | [`0x491B5dcFa9bfb1d0608cbF18D7C724850543e6A1`](https://explorer-test.avax.network/c-chain/address/0x491B5dcFa9bfb1d0608cbF18D7C724850543e6A1) |
+| Surety | [`0x16eBE4cE2CaCAf14b4Bd783C68aAA7d48Ea6B9AA`](https://explorer-test.avax.network/c-chain/address/0x16eBE4cE2CaCAf14b4Bd783C68aAA7d48Ea6B9AA) |
+| PriceReferenceVerifier | [`0x7F48e82d810ba7E9ECE96C6aC7F1098F68Cd43Ed`](https://explorer-test.avax.network/c-chain/address/0x7F48e82d810ba7E9ECE96C6aC7F1098F68Cd43Ed) |
+| HashCommitVerifier | [`0x541DC1d1025ed9b87EdD9e07CdB81E1Dac945B5e`](https://explorer-test.avax.network/c-chain/address/0x541DC1d1025ed9b87EdD9e07CdB81E1Dac945B5e) |
+| Test USDC (EIP-3009) | [`0x28800e6Fc6dd4A6cd6B3432742Fd9431d6bd5e35`](https://explorer-test.avax.network/c-chain/address/0x28800e6Fc6dd4A6cd6B3432742Fd9431d6bd5e35) |
 | ERC-8004 Identity Registry (official) | [`0x8004A818BFB912233c491871b3d84c89A494BD9e`](https://explorer-test.avax.network/c-chain/address/0x8004A818BFB912233c491871b3d84c89A494BD9e) |
 | ERC-8004 Reputation Registry (official) | [`0x8004B663056A597Dffe9eCcC1965A193B7388713`](https://explorer-test.avax.network/c-chain/address/0x8004B663056A597Dffe9eCcC1965A193B7388713) |
 | Chainlink AVAX/USD (official) | [`0x5498BB86BC934c8D34FDA08E81D444153d0D06aD`](https://explorer-test.avax.network/c-chain/address/0x5498BB86BC934c8D34FDA08E81D444153d0D06aD) |
@@ -33,9 +33,9 @@ Real transactions you can open (each is one of the scenarios from the demo):
 
 | Scenario | Transaction |
 |---|---|
-| Honest delivery, verified against Chainlink, seller paid | [order #1 settle](https://explorer-test.avax.network/c-chain/tx/0xccf71a264f9a9e5dd8df2ce9ce613b5813c5778364426726025dbe7a2ce9b2f7) |
-| Seller lied (+12%): buyer refunded 2x, bond slashed | [order #2 refund](https://explorer-test.avax.network/c-chain/tx/0x97b27ebca297387885f9676dc14c293840d24e5f48f50f9eae7c0a110171a3cd) |
-| Seller went silent: anyone forces the refund after the deadline | [order #4 timeout refund](https://explorer-test.avax.network/c-chain/tx/0x2ebb10ca43854e70d2174a268577c2c0041fd65e535fe3bae5d1800e3f485524) |
+| Honest delivery, verified against Chainlink, seller paid | [order #1 settle](https://explorer-test.avax.network/c-chain/tx/0x264fc50da5a88b357581ae70c1ed4279378e55211bb266e6ebc202781119dada) |
+| Seller lied (+12%): buyer refunded 2x, bond slashed | [order #2 refund](https://explorer-test.avax.network/c-chain/tx/0x440d1d9706e835cb99ae90d35bec71defd5563fa06c2b6e17accfb7307e35ae4) |
+| Seller went silent: anyone forces the refund after the deadline | [order #4 timeout refund](https://explorer-test.avax.network/c-chain/tx/0xe2ee11d0b0a11f64fe70a47ffbc5e60da18b9c6a0bd374649a52f2ef0163f1aa) |
 
 Verified by running the full flow on Fuji with the official registries: honest buy, lie then refund+slash, the buyer agent
 rerouting away from the cheater using only the ERC-8004 reputation, timeout refund, and a 3-agent swarm.

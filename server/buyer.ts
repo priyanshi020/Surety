@@ -41,8 +41,8 @@ async function assess(): Promise<Candidate[]> {
     }
     const successes = Math.round((avg * count) / 100);
     const failures = count - successes;
-    // Laplace-smoothed success probability; a failure weighs 3x because it costs the buyer time.
-    const p = (successes + 1) / (successes + 3 * failures + 2);
+    // Laplace-smoothed success probability; a failure weighs 4x because it costs the buyer time.
+    const p = (successes + 1) / (successes + 4 * failures + 2);
     out.push({
       key: s.key,
       name: s.name,

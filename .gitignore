@@ -5,3 +5,5 @@ cache
 typechain-types
 coverage
 deployments/local.json
+.rec-tools
+demo-video
